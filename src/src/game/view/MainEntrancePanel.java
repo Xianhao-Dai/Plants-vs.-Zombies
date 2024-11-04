@@ -9,78 +9,96 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 public class MainEntrancePanel extends JPanel {
-    private final JLabel grassLabel;
-    private final JLabel grassRollLabel;
-    private final int grassRollOriginXPos;
+    private  BufferedImage dirtImage;
+    private  BufferedImage grassImage;
+    private  BufferedImage grassRollImage;
+    private BufferedImage backgroundImage;
+    private JButton dirtButton;
+    private JLabel grassLabel;
+    private JLabel grassRollLabel;
+
+    private final int mainWindowWidth;
+    private final int mainWindowHeight;
+
+    private int grassRollOriginXPos;
     private int grassRollXPos;
     private int grassRollAngle;
+    private double grassRollScale;
     private final Timer timer;
 
     public MainEntrancePanel() {
-        // use absolute layout on entrance button
-        setLayout(null);
-        int mainWindowWidth = MainWindowUtil.mainWindowWidth;
-        int mainWindowHeight = MainWindowUtil.mainWindowHeight;
-        JButton entranceButton = new JButton();
-        grassLabel = new JLabel();
-        timer = new Timer(0, _ -> updateRollAnimation(mainWindowWidth / 3));
-        // adjustment of icon and button
-        int leftOffset = 5;
-        int bottomOffset = 23;
-        grassRollLabel = new JLabel();
-        grassRollOriginXPos = mainWindowWidth / 3 - 9 * leftOffset;
-        grassRollAngle = 0;
-        grassRollXPos = grassRollOriginXPos;
-        try {
-            BufferedImage grassImage = ImageResourceUtil.loadScaledImage("src/asset/小组件/LoadBar_grass.png", mainWindowWidth / 3, 0);
-            grassLabel.setIcon(new ImageIcon(grassImage));
-            grassLabel.setBounds(mainWindowWidth / 3 - leftOffset, mainWindowHeight * 3 / 4 - bottomOffset, grassImage.getWidth(), grassImage.getHeight());
-
-            BufferedImage buttonImage = ImageResourceUtil.loadScaledImage("src/asset/小组件/LoadBar_dirt.png", mainWindowWidth / 3, mainWindowHeight / 12);
-            entranceButton.setIcon(new ImageIcon(buttonImage));
-            entranceButton.setBounds(mainWindowWidth / 3, mainWindowHeight * 3 / 4, buttonImage.getWidth(), buttonImage.getHeight());
-            entranceButton.setBorderPainted(false);
-            entranceButton.setFocusPainted(false);
-            entranceButton.setContentAreaFilled(false);
-            entranceButton.setVisible(true);
-
-            ImageIcon grassRollOriginImage = new ImageIcon("src/asset/小组件/关卡/SodRollCap.png");
-            BufferedImage grassRollImage = ImageResourceUtil.loadScaledImage("src/asset/小组件/关卡/SodRollCap.png", grassRollOriginImage.getIconWidth(), grassRollOriginImage.getIconHeight());
-            grassRollLabel.setIcon(new ImageIcon(grassRollImage));
-            grassRollLabel.setBounds(mainWindowWidth / 3 - leftOffset, mainWindowHeight * 3 / 4 - 65, grassRollOriginImage.getIconWidth(), grassRollOriginImage.getIconHeight());
-
-            add(grassRollLabel);
-            add(grassLabel);
-            add(entranceButton);
-            timer.start();
-        } catch (IOException _) {}
-    }
-
-    private void updateRollAnimation(int width) {
-        grassRollXPos += 3;
-        grassRollAngle += 20;
-        if (grassRollXPos > grassRollOriginXPos + width) {
-            timer.stop();
-            return;
-        }
-
-        try {
-            BufferedImage rotatedGrassImage = ImageResourceUtil.loadRotatedImage("src/asset/小组件/关卡/SodRollCap.png", grassRollAngle);
-            grassRollLabel.setIcon(new ImageIcon(rotatedGrassImage));
-            grassLabel.setBounds(grassLabel.getX(), grassLabel.getY(), grassRollXPos - grassRollOriginXPos, grassLabel.getHeight());
-            grassRollLabel.setLocation(grassRollXPos, grassRollLabel.getY());
-            repaint(grassRollLabel.getBounds());
-            repaint(grassLabel.getBounds());
-        } catch (IOException _) {}
+        mainWindowWidth = MainWindowUtil.mainWindowWidth;
+        mainWindowHeight = MainWindowUtil.mainWindowHeight;
+        loadCachedImages();
+        setUpUI();
+        timer = new Timer(10, _ -> updateRollAnimation(mainWindowWidth / 3));
+        timer.start();
     }
 
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+        g.drawImage(backgroundImage, 0, 0, this);
+    }
+
+    private void loadCachedImages() {
         try {
-            BufferedImage titleScreen = ImageResourceUtil.loadScaledImage("src/asset/小组件/关卡/titlescreen.jpg");
-            g.drawImage(titleScreen, 0, 0, this);
-        } catch (Exception _) {
+            dirtImage = ImageResourceUtil.loadFullWindowImage("src/asset/小组件/LoadBar_dirt.png", mainWindowWidth / 3, mainWindowHeight / 12);
+            grassImage = ImageResourceUtil.loadFullWindowImage("src/asset/小组件/LoadBar_grass.png", mainWindowWidth / 3, 0);
+            grassRollImage = ImageResourceUtil.loadImage("src/asset/小组件/关卡/SodRollCap.png");
+            backgroundImage = ImageResourceUtil.loadFullWindowImage("src/asset/小组件/关卡/titlescreen.jpg");
+        } catch (IOException _) {
         }
+    }
+
+    private void setUpUI() {
+        setLayout(null);
+
+        dirtButton = new JButton(new ImageIcon(dirtImage));
+        dirtButton.setBounds(mainWindowWidth / 3, mainWindowHeight * 3 / 4, dirtImage.getWidth(), dirtImage.getHeight());
+        dirtButton.setBorderPainted(false);
+        dirtButton.setFocusPainted(false);
+        dirtButton.setContentAreaFilled(false);
+        dirtButton.setVisible(true);
+
+        int horizontalOffset = 5;
+        int verticalOffset_1 = 20;
+        int verticalOffset_2 = 40;
+
+        grassLabel = new JLabel(new ImageIcon(grassImage));
+        grassLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        grassLabel.setBounds(mainWindowWidth / 3 - horizontalOffset, mainWindowHeight * 3 / 4 - verticalOffset_1, grassImage.getWidth(), grassImage.getHeight());
+
+        grassRollLabel = new JLabel(new ImageIcon(grassRollImage));
+        grassRollLabel.setBounds(mainWindowWidth / 3 - horizontalOffset, mainWindowHeight * 3 / 4 - verticalOffset_1 - verticalOffset_2, grassRollImage.getWidth(), grassRollImage.getHeight());
+        grassRollOriginXPos = mainWindowWidth / 3 - grassRollImage.getWidth() / 2;
+        grassRollXPos = grassRollOriginXPos;
+        grassRollAngle = 0;
+        grassRollScale = 1.0;
+
+        add(grassRollLabel);
+        add(grassLabel);
+        add(dirtButton);
+    }
+
+
+    private void updateRollAnimation(int width) {
+        grassRollXPos += 3;
+        grassRollAngle += 20;
+        grassRollScale -= 0.0055;
+        if (grassRollXPos > grassRollOriginXPos + width) {
+            grassRollLabel.setVisible(false);
+            timer.stop();
+            return;
+        }
+        grassLabel.setBounds(grassLabel.getX(), grassLabel.getY(), grassRollXPos - grassRollOriginXPos, grassLabel.getHeight());
+        repaint(grassLabel.getBounds());
+
+        int grassRowNewWidth = (int) (grassRollImage.getWidth() * grassRollScale);
+        int grassRowNewHeight = (int) (grassRollImage.getHeight() * grassRollScale);
+        BufferedImage rotatedGrassImage = ImageResourceUtil.resizeImage(ImageResourceUtil.rotateImage(grassRollImage, grassRollAngle), grassRowNewWidth, grassRowNewHeight);
+        grassRollLabel.setIcon(new ImageIcon(rotatedGrassImage));
+        grassRollLabel.setBounds(grassRollXPos + grassRollLabel.getWidth() - grassRowNewWidth + 15, grassRollLabel.getY() + grassRollLabel.getHeight() - grassRowNewHeight, grassRowNewWidth, grassRowNewHeight);
+        repaint(grassRollLabel.getBounds());
     }
 }

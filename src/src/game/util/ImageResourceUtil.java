@@ -25,10 +25,10 @@ public class ImageResourceUtil {
      * @return stretched full-window image
      * @throws IOException exception
      */
-    public static BufferedImage loadScaledImage(String path) throws IOException {
+    public static BufferedImage loadFullWindowImage(String path) throws IOException {
         int width = MainWindowUtil.mainWindowWidth - MainWindowUtil.mainWindowInsets.left - MainWindowUtil.mainWindowInsets.right;
         int height = MainWindowUtil.mainWindowHeight - MainWindowUtil.mainWindowInsets.top - MainWindowUtil.mainWindowInsets.bottom;
-        return ImageResourceUtil.loadScaledImage(path, width, height);
+        return ImageResourceUtil.loadFullWindowImage(path, width, height);
     }
 
     /**
@@ -38,9 +38,9 @@ public class ImageResourceUtil {
      * @return stretched image with certain scale
      * @throws IOException exception
      */
-    public static BufferedImage loadScaledImage(String path, float scale) throws IOException {
+    public static BufferedImage loadFullWindowImage(String path, float scale) throws IOException {
         BufferedImage image = loadImage(path);
-        return ImageResourceUtil.loadScaledImage(path, (int) (image.getWidth() * scale), (int) (image.getWidth() * scale));
+        return ImageResourceUtil.loadFullWindowImage(path, (int) (image.getWidth() * scale), (int) (image.getWidth() * scale));
     }
 
     /**
@@ -51,7 +51,7 @@ public class ImageResourceUtil {
      * @return stretched image
      * @throws IOException exception
      */
-    public static BufferedImage loadScaledImage(String path, int width, int height) throws IOException {
+    public static BufferedImage loadFullWindowImage(String path, int width, int height) throws IOException {
         BufferedImage image = loadImage(path);
         float stretchScaleOnWidth = width / (float)image.getWidth();
         float stretchScaleOnHeight = height / (float)image.getHeight();
@@ -62,6 +62,20 @@ public class ImageResourceUtil {
             height = (int)(image.getHeight() * stretchScale);
         }
         return ImageResourceUtil.resizeImage(image, width, height);
+    }
+
+    /**
+     * Proportionally stretch image icon until its width or height equivalent to that of the parameter
+     * @param originImage original image
+     * @param width target width
+     * @param height target height
+     * @return stretched image
+     */
+    public static BufferedImage resizeImage(BufferedImage originImage, int width, int height) {
+        Image image = originImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        BufferedImage scaledImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        scaledImage.getGraphics().drawImage(image, 0, 0, null);
+        return scaledImage;
     }
 
     /**
@@ -76,7 +90,13 @@ public class ImageResourceUtil {
         return ImageResourceUtil.rotateImage(image, angle);
     }
 
-    private static BufferedImage rotateImage(BufferedImage originImage, int angle) {
+    /**
+     * Rotate image icon with a certain angle
+     * @param originImage original image
+     * @param angle target angle
+     * @return rotated image
+     */
+    public static BufferedImage rotateImage(BufferedImage originImage, int angle) {
         int width = originImage.getWidth();
         int height = originImage.getHeight();
         BufferedImage rotatedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
@@ -86,12 +106,5 @@ public class ImageResourceUtil {
         g2d.drawImage(originImage, transform, null);
         g2d.dispose();
         return rotatedImage;
-    }
-
-    private static BufferedImage resizeImage(BufferedImage originImage, int newWidth, int newHeight) {
-        Image image = originImage.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
-        BufferedImage scaledImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
-        scaledImage.getGraphics().drawImage(image, 0, 0, null);
-        return scaledImage;
     }
 }
