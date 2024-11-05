@@ -55,10 +55,15 @@ public class MainEntrancePanel extends JPanel {
         setLayout(null);
 
         dirtButton = new JButton(new ImageIcon(dirtImage));
+        dirtButton.setForeground(Color.BLACK);
+        dirtButton.setFont(new Font("Chalkduster", Font.BOLD, 25));
+        dirtButton.setHorizontalTextPosition(SwingConstants.CENTER);
         dirtButton.setBounds(mainWindowWidth / 3, mainWindowHeight * 3 / 4, dirtImage.getWidth(), dirtImage.getHeight());
         dirtButton.setBorderPainted(false);
         dirtButton.setFocusPainted(false);
         dirtButton.setContentAreaFilled(false);
+        dirtButton.setDisabledIcon(new ImageIcon(dirtImage));
+        dirtButton.setEnabled(false);
         dirtButton.setVisible(true);
 
         int horizontalOffset = 5;
@@ -88,6 +93,8 @@ public class MainEntrancePanel extends JPanel {
         grassRollScale -= 0.0055;
         if (grassRollXPos > grassRollOriginXPos + width) {
             grassRollLabel.setVisible(false);
+            dirtButton.setText("GAME START");
+            dirtButton.setEnabled(true);
             timer.stop();
             return;
         }
@@ -98,7 +105,7 @@ public class MainEntrancePanel extends JPanel {
         int grassRowNewHeight = (int) (grassRollImage.getHeight() * grassRollScale);
         BufferedImage rotatedGrassImage = ImageResourceUtil.resizeImage(ImageResourceUtil.rotateImage(grassRollImage, grassRollAngle), grassRowNewWidth, grassRowNewHeight);
         grassRollLabel.setIcon(new ImageIcon(rotatedGrassImage));
-        grassRollLabel.setBounds(grassRollXPos + grassRollLabel.getWidth() - grassRowNewWidth + 15, grassRollLabel.getY() + grassRollLabel.getHeight() - grassRowNewHeight, grassRowNewWidth, grassRowNewHeight);
+        grassRollLabel.setBounds(grassRollXPos + grassRollLabel.getWidth() - grassRowNewWidth, grassRollLabel.getY() + grassRollLabel.getHeight() - grassRowNewHeight, grassRowNewWidth, grassRowNewHeight);
         repaint(grassRollLabel.getBounds());
     }
 }
