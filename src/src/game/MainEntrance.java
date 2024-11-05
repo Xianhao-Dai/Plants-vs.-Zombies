@@ -2,6 +2,7 @@ package src.game;
 
 import src.game.util.MainWindowUtil;
 import src.game.view.MainEntrancePanel;
+import src.game.view.RootContainerPanel;
 
 import javax.swing.*;
 
@@ -14,8 +15,10 @@ public class MainEntrance {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
         frame.setResizable(false);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         MainWindowUtil.mainWindowInsets = frame.getInsets();
-        MainEntrancePanel mainEntrancePanel = new MainEntrancePanel();
-        frame.add(mainEntrancePanel);
+        RootContainerPanel rootContainerPanel = new RootContainerPanel();
+        frame.setContentPane(rootContainerPanel);
+        rootContainerPanel.loadMainEntrancePanel();
     }
 }

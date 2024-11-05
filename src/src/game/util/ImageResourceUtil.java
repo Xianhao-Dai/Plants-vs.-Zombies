@@ -28,7 +28,7 @@ public class ImageResourceUtil {
     public static BufferedImage loadFullWindowImage(String path) throws IOException {
         int width = MainWindowUtil.mainWindowWidth - MainWindowUtil.mainWindowInsets.left - MainWindowUtil.mainWindowInsets.right;
         int height = MainWindowUtil.mainWindowHeight - MainWindowUtil.mainWindowInsets.top - MainWindowUtil.mainWindowInsets.bottom;
-        return ImageResourceUtil.loadFullWindowImage(path, width, height);
+        return ImageResourceUtil.loadScaledImage(path, width, height);
     }
 
     /**
@@ -38,9 +38,9 @@ public class ImageResourceUtil {
      * @return stretched image with certain scale
      * @throws IOException exception
      */
-    public static BufferedImage loadFullWindowImage(String path, float scale) throws IOException {
+    public static BufferedImage loadScaledImage(String path, float scale) throws IOException {
         BufferedImage image = loadImage(path);
-        return ImageResourceUtil.loadFullWindowImage(path, (int) (image.getWidth() * scale), (int) (image.getWidth() * scale));
+        return ImageResourceUtil.loadScaledImage(path, (int) (image.getWidth() * scale), (int) (image.getWidth() * scale));
     }
 
     /**
@@ -51,7 +51,7 @@ public class ImageResourceUtil {
      * @return stretched image
      * @throws IOException exception
      */
-    public static BufferedImage loadFullWindowImage(String path, int width, int height) throws IOException {
+    public static BufferedImage loadScaledImage(String path, int width, int height) throws IOException {
         BufferedImage image = loadImage(path);
         float stretchScaleOnWidth = width / (float)image.getWidth();
         float stretchScaleOnHeight = height / (float)image.getHeight();

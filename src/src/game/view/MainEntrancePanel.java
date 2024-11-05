@@ -5,10 +5,12 @@ import src.game.util.MainWindowUtil;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-public class MainEntrancePanel extends JPanel {
+public class MainEntrancePanel extends JPanel implements ActionListener {
     private  BufferedImage dirtImage;
     private  BufferedImage grassImage;
     private  BufferedImage grassRollImage;
@@ -26,9 +28,12 @@ public class MainEntrancePanel extends JPanel {
     private double grassRollScale;
     private final Timer timer;
 
-    public MainEntrancePanel() {
+    private final RootContainerPanel rootContainer;
+
+    public MainEntrancePanel(RootContainerPanel _rootContainer) {
         mainWindowWidth = MainWindowUtil.mainWindowWidth;
         mainWindowHeight = MainWindowUtil.mainWindowHeight;
+        rootContainer = _rootContainer;
         loadCachedImages();
         setUpUI();
         timer = new Timer(10, _ -> updateRollAnimation(mainWindowWidth / 3));
@@ -43,8 +48,8 @@ public class MainEntrancePanel extends JPanel {
 
     private void loadCachedImages() {
         try {
-            dirtImage = ImageResourceUtil.loadFullWindowImage("src/asset/小组件/LoadBar_dirt.png", mainWindowWidth / 3, mainWindowHeight / 12);
-            grassImage = ImageResourceUtil.loadFullWindowImage("src/asset/小组件/LoadBar_grass.png", mainWindowWidth / 3, 0);
+            dirtImage = ImageResourceUtil.loadScaledImage("src/asset/小组件/LoadBar_dirt.png", mainWindowWidth / 3, mainWindowHeight / 12);
+            grassImage = ImageResourceUtil.loadScaledImage("src/asset/小组件/LoadBar_grass.png", mainWindowWidth / 3, 0);
             grassRollImage = ImageResourceUtil.loadImage("src/asset/小组件/关卡/SodRollCap.png");
             backgroundImage = ImageResourceUtil.loadFullWindowImage("src/asset/小组件/关卡/titlescreen.jpg");
         } catch (IOException _) {
@@ -53,6 +58,7 @@ public class MainEntrancePanel extends JPanel {
 
     private void setUpUI() {
         setLayout(null);
+        setSize(mainWindowWidth, mainWindowHeight);
 
         dirtButton = new JButton(new ImageIcon(dirtImage));
         dirtButton.setForeground(Color.BLACK);
@@ -65,6 +71,7 @@ public class MainEntrancePanel extends JPanel {
         dirtButton.setDisabledIcon(new ImageIcon(dirtImage));
         dirtButton.setEnabled(false);
         dirtButton.setVisible(true);
+        dirtButton.addActionListener(this);
 
         int horizontalOffset = 5;
         int verticalOffset_1 = 20;
@@ -107,5 +114,10 @@ public class MainEntrancePanel extends JPanel {
         grassRollLabel.setIcon(new ImageIcon(rotatedGrassImage));
         grassRollLabel.setBounds(grassRollXPos + grassRollLabel.getWidth() - grassRowNewWidth, grassRollLabel.getY() + grassRollLabel.getHeight() - grassRowNewHeight, grassRowNewWidth, grassRowNewHeight);
         repaint(grassRollLabel.getBounds());
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        rootContainer.loadMainMenuPanel();
     }
 }
