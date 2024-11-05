@@ -1,7 +1,6 @@
 package src.game;
 
 import src.game.util.MainWindowUtil;
-import src.game.view.MainEntrancePanel;
 import src.game.view.RootContainerPanel;
 
 import javax.swing.*;
