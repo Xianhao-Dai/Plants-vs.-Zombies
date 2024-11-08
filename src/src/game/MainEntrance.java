@@ -16,7 +16,7 @@ public class MainEntrance {
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         MainWindowUtil.mainWindowInsets = frame.getInsets();
-        RootContainerPanel rootContainerPanel = new RootContainerPanel();
+        RootContainerPanel rootContainerPanel = new RootContainerPanel(frame);
         frame.setContentPane(rootContainerPanel);
         rootContainerPanel.loadMainEntrancePanel();
     }

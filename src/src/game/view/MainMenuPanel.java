@@ -1,7 +1,9 @@
 package src.game.view;
 
+import src.game.util.DialogUtil;
 import src.game.util.ImageResourceUtil;
 import src.game.util.MainWindowUtil;
+import src.game.util.customView.CustomDialog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -38,6 +40,7 @@ public class MainMenuPanel extends JPanel implements ActionListener {
     private JButton miniGameButton;
     private JButton survivalButton;
     private JButton changeNameButton;
+    private JLabel nameLabel;
 
     private final int mainWindowWidth;
     private final int mainWindowHeight;
@@ -150,11 +153,17 @@ public class MainMenuPanel extends JPanel implements ActionListener {
         changeNameButton.setActionCommand("changeName");
         changeNameButton.addActionListener(this);
 
+        nameLabel = new JLabel();
+        nameLabel.setBounds(86, 95, 230, 20);
+        nameLabel.setForeground(Color.WHITE);
+        nameLabel.setVisible(true);
+
         add(adventureButton);
         add(puzzleButton);
         add(miniGameButton);
         add(survivalButton);
         add(changeNameButton);
+        add(nameLabel);
     }
 
     @Override
@@ -169,6 +178,8 @@ public class MainMenuPanel extends JPanel implements ActionListener {
             case "survival":
                 break;
             case "changeName":
+                JPanel dialog = DialogUtil.showMessage(rootContainer.frame, "", "");
+                dialog.setVisible(true);
                 break;
             default:
                 break;

@@ -9,13 +9,16 @@ public class RootContainerPanel extends JPanel {
     private final JPanel layoutPanel = new JPanel();
     private final CardLayout cardLayout = new CardLayout();
 
-    public RootContainerPanel() {
+    public JFrame frame;
+
+    public RootContainerPanel(JFrame _frame) {
         setLayout(new BorderLayout());
         setVisible(true);
         add(layoutPanel);
         layoutPanel.setLayout(cardLayout);
         layoutPanel.add("mainEntrancePanel", mainEntrancePanel);
         layoutPanel.add("mainMenuPanel", mainMenuPanel);
+        frame = _frame;
     }
 
     public void loadMainEntrancePanel() {

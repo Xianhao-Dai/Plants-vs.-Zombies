@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.IOException;
 
 public class ImageResourceUtil {
-
     /**
      * Load origin image
      * @param path image relative path
